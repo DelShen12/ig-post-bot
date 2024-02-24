@@ -11,8 +11,10 @@ tasks = CodeTasks()
 agents = CodeAgents()
 
 code = dedent("""\
-	你將創建使用Python的專案，這是指示：
-
+		你將創建使用Python的專案，這是指示：
+		1.寫下一段訊息、時間點，在指定時間上傳貼文
+		2.可以上傳圖片、文字
+		3.可以設定貼文的tag
 	""")
 
 
