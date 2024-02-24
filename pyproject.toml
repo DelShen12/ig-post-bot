@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "ig-post-bot"
+version = "0.1.0"
+description = "IG自動PO文專案"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<=3.13"
+crewai = "*"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
