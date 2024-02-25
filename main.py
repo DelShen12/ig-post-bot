@@ -13,18 +13,58 @@ from agents import CodeAgents
 tasks = CodeTasks()
 agents = CodeAgents()
 
-code = dedent("""\
+instruction = dedent("""\
 你將創建使用Python的專案，這是指示：
-1. 草稿輸入與潤飾
-(1)使用者可以輸入一段草稿給程式。
-(2)程式需要有一個LLM（語言模型）來自動潤飾使用者的草稿。
-(3)潤飾的目標是使文章更具吸引力，以增加點閱率。
-2. 自動登入與發佈
-(1)程式需要能夠在指定的時間（例如下午三點整）自動登入使用者的Instagram帳戶。
-(2)登入後，程式需要將潤飾過的草稿發佈到Instagram。
-3. 標籤生成:程式需要能夠生成引人注目的標籤並加到Instagram的發佈內容中。
-4. 使用者介面: 程式需要有一個使用者介面，讓使用者可以輸入草稿，設定發佈時間，以及查看潤飾後的結果和生成的標籤。
-5. 錯誤處理: 程式需要能夠處理可能出現的錯誤，例如登入失敗，發佈失敗等，並將錯誤訊息通知給使用者。
+程式名稱
+
+自動發佈 IG 貼文
+
+程式需求
+
+使用者可輸入草稿文字
+程式可自動以 LLM 潤飾草稿，主要以吸引人點閱的方式
+程式可自動在下午三點整登入使用者的 IG 帳號
+程式可自動發佈潤飾後的草稿
+程式可自動加上最引人注目的 tag
+程式功能
+
+草稿輸入區：使用者可輸入草稿文字
+LLM 潤飾：程式可自動以 LLM 潤飾草稿，主要以吸引人點閱的方式
+IG 登入：程式可自動登入使用者的 IG 帳號
+自動發佈：程式可自動發佈潤飾後的草稿
+標籤推薦：程式可推薦最引人注目的 tag
+程式介面
+
+主畫面：顯示草稿輸入區、LLM 潤飾、IG 登入、自動發佈等功能
+設定畫面：使用者可設定 IG 帳號、發佈時間、標籤推薦等
+程式規格
+
+程式語言：Python
+開發環境：Google Colab
+執行環境：Google Cloud Platform
+程式測試
+
+單元測試：測試各個功能是否正常運作
+整合測試：測試各個功能是否能整合在一起正常運作
+程式部署
+
+將程式部署到 Google Cloud Platform
+程式維護
+
+定期更新 LLM 模型
+修正程式錯誤
+程式使用說明
+
+在草稿輸入區輸入草稿文字
+點擊「LLM 潤飾」按鈕，程式會自動以 LLM 潤飾草稿
+點擊「IG 登入」按鈕，程式會自動登入使用者的 IG 帳號
+點擊「自動發佈」按鈕，程式會自動發佈潤飾後的草稿
+程式會自動加上最引人注目的 tag
+程式注意事項
+
+使用者需自行準備 IG 帳號
+使用者需自行設定發佈時間
+使用者需自行設定標籤推薦
 """)
 
 # 開始執行時間
@@ -36,12 +76,12 @@ qa_engineer_agent = agents.qa_engineer_agent()
 chief_qa_engineer_agent = agents.chief_qa_engineer_agent()
 
 # 創建任務
-code_code = tasks.code_task(senior_engineer_agent, code)
-review_code = tasks.review_task(qa_engineer_agent, code)
-approve_code = tasks.evaluate_task(chief_qa_engineer_agent, code)
+write_code = tasks.code_task(senior_engineer_agent, instruction)
+review_code = tasks.review_task(qa_engineer_agent, instruction)
+approve_code = tasks.evaluate_task(chief_qa_engineer_agent, instruction)
 
 # 創建Crew
-crew_tasks = [code_code, review_code, approve_code]
+crew_tasks = [write_code, review_code, approve_code]
 crew = Crew(
 	agents=[
 		senior_engineer_agent,
