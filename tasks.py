@@ -12,11 +12,12 @@ class CodeTasks():
 
 				你的中間決策過程將以繁體中文顯示並記錄下來，以用於評估你的工作。
 				你的最終答案必須是完整的Python程式碼，只有Python程式碼，除此之外，一無所有。
-			"""),
+			""").replace('\t', ''),
+			async_execution=True,
 			agent=agent
 		)
 
-	def review_task(self, agent, code):
+	def review_task(self, agent, context, code):
 		return Task(description=dedent(f"""\
 				你正在協助使用Python創建一段程式碼，以下是指令：
 
@@ -30,11 +31,13 @@ class CodeTasks():
 
 				你的中間決策過程將以繁體中文顯示並記錄下來，以用於評估你的工作。
 				你的最終答案必須是完整的Python程式碼，只有Python程式碼，除此之外，一無所有。
-			"""),
+			""").replace('\t', ''),
+            context=context,
+			async_execution=True,
 			agent=agent
 		)
 
-	def evaluate_task(self, agent, code):
+	def evaluate_task(self, agent, context, code):
 		return Task(description=dedent(f"""\
 				你正在協助使用Python創建一段程式碼，以下是指令：
 
@@ -46,6 +49,7 @@ class CodeTasks():
 
 				你的中間決策過程將以繁體中文顯示並記錄下來，以用於評估你的工作。
 				你的最終答案必須是完整的Python程式碼，只有Python程式碼，除此之外，一無所有。
-			"""),
+			""").replace('\t', ''),
+			context=context,
 			agent=agent
 		)

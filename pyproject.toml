@@ -1,17 +1,28 @@
 [tool.poetry]
 name = "ig-post-bot"
 version = "0.1.0"
-description = "IG自動PO文專案"
+description = ""
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.11,<=3.13"
-crewai = "*"
+crewai = "^0.14.4"
 python-dotenv = "^1.0.1"
 pytz = "^2024.1"
+langchain-google-genai = "^0.0.9"
+crewai-tools = "^0.0.12"
 
+[tool.pyright]
+# https://github.com/microsoft/pyright/blob/main/docs/configuration.md
+useLibraryCodeForTypes = true
+exclude = [".cache"]
+
+[tool.ruff]
+# https://beta.ruff.rs/docs/configuration/
+select = ['E', 'W', 'F', 'I', 'B', 'C4', 'ARG', 'SIM']
+ignore = ['W291', 'W292', 'W293']
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
