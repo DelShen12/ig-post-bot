@@ -1,13 +1,14 @@
 
 # ig-post-bot
-- 開始時間：2024-02-28 10:45:12
-- 結束時間：2024-02-28 10:46:05
+- 開始時間：2024-02-28 11:05:47
+- 結束時間：2024-02-28 11:07:02
 
 ## 最終結果
 ```python
 import streamlit as st
 import openai
 import instaloader
+from datetime import datetime
 
 # 建立使用者介面
 st.title("自動發佈 IG 貼文")
@@ -20,12 +21,12 @@ with st.form("草稿輸入區"):
 # LLM 潤飾
 if submitted:
     # 選擇 LLM 模型
-    model = st.selectbox("選擇 LLM 模型", ["text-bison-001", "text-bison-002"])
+    model = st.selectbox("選擇 LLM 模型", ["text-bison-001", "text-davinci-002"])
 
     # 使用 LLM 潤飾草稿
     response = openai.Completion.create(
         model=model,
-        prompt=f"潤飾以下草稿，使其更具吸引力：\n{draft}",
+        prompt=f"潤飾以下草稿，使其更具吸引力：{draft}",
         temperature=0.7,
         max_tokens=256
     )
@@ -48,14 +49,19 @@ if login_submitted:
     L.login(username, password)
 
     # 設定發佈時間
-    publish_time = st.datetime_input("選擇發佈時間")
+    post_time = st.datetime_input("選擇發佈時間")
 
     # 設定標籤推薦
     tags = st.multiselect("選擇標籤推薦", ["#love", "#instagood", "#photooftheday", "#fashion", "#beautiful"])
 
+    # 檢查發佈時間是否在未來
+    if post_time < datetime.now():
+        st.error("發佈時間必須在未來")
+        return
+
     # 自動發佈潤飾後的草稿
-    L.post(polished_draft, tags, publish_time)
+    L.post(polished_draft, tags)
 
     # 顯示發佈成功訊息
-    st.success("貼文已成功發佈！")
+    st.write("貼文已成功發佈！")
 ```

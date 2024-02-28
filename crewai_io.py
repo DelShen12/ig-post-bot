@@ -62,15 +62,15 @@ def setup_logging():
     stream_handler.setFormatter(log_format)
     logger.addHandler(stream_handler)
 
-    # 創建一個文件處理器，用於將日誌寫入到文件 "crewai_io.log"，追加模式
-    file_handler = RotatingFileHandler('crewai_io.log', mode='a', maxBytes=5*1024*1024, backupCount=2, encoding=None, delay=0)
+    # 創建一個文件處理器，用於將日誌寫入到文件 "CREWAI_IO.log"
+    file_handler = RotatingFileHandler('CREWAI_IO.log', mode='w', encoding=None, delay=0)
     file_handler.setFormatter(log_format)
     logger.addHandler(file_handler)
 
     # 在日誌文件中添加分割線和當前執行時間
-    separator = '\n' + '=' * 50 + '\n'
+    separator = '\n' + '=' * 45 + '\n'
     current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    logging.info(separator + 'Execution Time: ' + current_time + '\n')
+    logging.info(separator + '|| Execution Time: ' + current_time + '     ||' + separator)
 
     # 將 sys.stdout 和 sys.stderr 重定向到日誌
     sys.stdout = LoggerWriter(logging.INFO)
