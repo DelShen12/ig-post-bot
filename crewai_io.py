@@ -68,9 +68,12 @@ def setup_logging():
     logger.addHandler(file_handler)
 
     # 在日誌文件中添加分割線和當前執行時間
-    separator = '\n' + '=' * 45 + '\n'
+    separator = '\n' + '=' * 39 + '\n'
     current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    logging.info(separator + '|| Execution Time: ' + current_time + '     ||' + separator)
+    execution_time_log = '|| 開始執行時間： ' + current_time + ' ||'
+    padding_length = len(separator) - len(execution_time_log) - 2  # -2 for the newline characters in separator
+    execution_time_log = execution_time_log.center(padding_length, ' ')
+    logging.info(separator + execution_time_log + separator)
 
     # 將 sys.stdout 和 sys.stderr 重定向到日誌
     sys.stdout = LoggerWriter(logging.INFO)

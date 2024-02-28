@@ -1,6 +1,6 @@
 from textwrap import dedent
 from crewai import Crew, Process
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 import datetime
 import pytz
 import os
@@ -13,9 +13,12 @@ from tasks import CodeTasks
 from agents import CodeAgents
 
 # Initialize the OpenAI GPT-4 language model
-OpenAIGPT4 = ChatOpenAI(
-    model="gpt-4"
-)
+GeminiPro = ChatGoogleGenerativeAI(
+		model="gemini-pro", 
+		verbose=True, 
+		temperature=0.1, 
+		google_api_key=os.environ.get("GEMINI_API_KEY")
+	)
 
 tasks = CodeTasks()
 agents = CodeAgents()
@@ -101,7 +104,7 @@ crew = Crew(
 		approve_code
 	],
     process=Process.hierarchical,
-    manager_llm=OpenAIGPT4,
+    manager_llm=GeminiPro,
     verbose=2
 )
 

@@ -1,54 +1,69 @@
 
 # ig-post-bot
-- 開始時間：2024-02-28 13:40:45
-- 結束時間：2024-02-28 13:50:13
+- 開始時間：2024-02-28 14:11:30
+- 結束時間：2024-02-28 14:12:34
 
 ## 最終結果
-程式碼已經包含了所有需求的功能：草稿輸入區，LLM潤飾，IG登入，自動發佈，標籤推薦。因此，我們的程式碼已經準備好了，並可以開始執行。
-
 ```python
+import os
 import time
-import pyautogui
-from LLM import LLM
+import instaloader
+import openai
+import schedule
 
-class IGPoster:
-    def __init__(self, username, password):
-        self.username = username
-        self.password = password
-        self.llm = LLM()
+# OpenAI API key
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    def login(self):
-        # 使用pyautogui輸入帳號密碼並登入IG
-        pyautogui.typewrite(self.username)
-        pyautogui.press('tab')
-        pyautogui.typewrite(self.password)
-        pyautogui.press('enter')
+# Instagram login credentials
+IG_USERNAME = os.getenv("IG_USERNAME")
+IG_PASSWORD = os.getenv("IG_PASSWORD")
 
-    def post(self, draft):
-        # 使用LLM潤飾草稿
-        polished_draft = self.llm.polish(draft)
-        # 使用pyautogui自動發佈潤飾後的草稿
-        pyautogui.typewrite(polished_draft)
-        pyautogui.press('enter')
+# Time to post (in 24-hour format)
+POST_TIME = os.getenv("POST_TIME")
 
-    def add_tag(self, tags):
-        # 使用pyautogui自動加上標籤
-        for tag in tags:
-            pyautogui.typewrite(tag)
-            pyautogui.press('enter')
+# Load the LLM model
+model = openai.Model("text-davinci-003")
 
-    def schedule_post(self, draft, tags, post_time):
-        # 計算需要等待的時間
-        wait_time = post_time - time.time()
-        if wait_time > 0:
-            time.sleep(wait_time)
-            self.login()
-            self.post(draft)
-            self.add_tag(tags)
-        else:
-            print("發佈時間不能早於現在時間")
+# Function to generate a caption using LLM
+def generate_caption(text):
+    response = model.generate(
+        prompt=f"Generate an engaging and attention-grabbing caption for the following text: {text}",
+        max_tokens=64,
+        temperature=0.7,
+    )
+    return response["candidates"][0]["output"]
 
+# Function to post to Instagram
+def post_to_instagram(image_path, caption):
+    # Login to Instagram
+    L = instaloader.Instaloader()
+    L.login(IG_USERNAME, IG_PASSWORD)
+
+    # Upload the image and post the caption
+    L.upload_photo(image_path, caption=caption)
+
+# Function to schedule the post
+def schedule_post(image_path, caption):
+    # Schedule the post to be published at the specified time
+    schedule.every().day.at(POST_TIME).do(post_to_instagram, image_path, caption)
+
+    # Start the scheduler
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+# Main function
+def main():
+    # Get the user input
+    text = input("Enter the text you want to post: ")
+
+    # Generate a caption using LLM
+    caption = generate_caption(text)
+
+    # Schedule the post
+    schedule_post("image.jpg", caption)
+
+# Run the main function
 if __name__ == "__main__":
-    ig_poster = IGPoster("username", "password")
-    ig_poster.schedule_post("草稿", ["#tag1", "#tag2"], 1622115600) # 2021/5/27 下午 03:00:00
+    main()
 ```
