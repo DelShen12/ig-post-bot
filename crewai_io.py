@@ -18,12 +18,13 @@ def write_to_markdown(result, start_time, end_time):
 ).replace('\t', '')
 
     # 寫入 Markdown 檔案的功能
-    markdown_file_name = "result.md"
+    markdown_file_name = "RESULT.md"
     with open(markdown_file_name, 'w', encoding='utf-8') as md_file:
         md_file.write(markdown_header)
 
 
 import sys
+import re
 import logging
 from logging.handlers import RotatingFileHandler
 import datetime
@@ -35,14 +36,18 @@ class LoggerWriter:
         self.level = level
 
     def write(self, message):
-        # 如果消息不為空，則寫入日誌
-        if message.rstrip() != "":
-            logging.log(self.level, message.rstrip())
+        # 如果消息不是空的，則寫入日誌
+        if message != '\n':
+            message = self.remove_ansi_codes(message)
+            logging.log(self.level, message)
 
     def flush(self):
         # 此 flush 方法是為了滿足 file-like 對象的需求
         pass
 
+    @staticmethod
+    def remove_ansi_codes(message):
+        return re.sub(r'\x1b\[.*?m', '', message)
 
 def setup_logging():
     # 創建一個日誌器
@@ -57,8 +62,8 @@ def setup_logging():
     stream_handler.setFormatter(log_format)
     logger.addHandler(stream_handler)
 
-    # 創建一個文件處理器，用於將日誌寫入到文件 "run.log"，追加模式
-    file_handler = RotatingFileHandler('run.log', mode='a', maxBytes=5*1024*1024, backupCount=2, encoding=None, delay=0)
+    # 創建一個文件處理器，用於將日誌寫入到文件 "crewai_io.log"，追加模式
+    file_handler = RotatingFileHandler('crewai_io.log', mode='a', maxBytes=5*1024*1024, backupCount=2, encoding=None, delay=0)
     file_handler.setFormatter(log_format)
     logger.addHandler(file_handler)
 

@@ -7,7 +7,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from crewai_log import write_to_markdown, setup_logging
+from crewai_io import write_to_markdown, setup_logging
 from tasks import CodeTasks
 from agents import CodeAgents
 
