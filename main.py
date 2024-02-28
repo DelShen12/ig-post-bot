@@ -1,5 +1,6 @@
 from textwrap import dedent
-from crewai import Crew
+from crewai import Crew, Process
+from langchain_openai import ChatOpenAI
 import datetime
 import pytz
 import os
@@ -10,6 +11,11 @@ load_dotenv()
 from crewai_io import write_to_markdown, setup_logging
 from tasks import CodeTasks
 from agents import CodeAgents
+
+# Initialize the OpenAI GPT-4 language model
+OpenAIGPT4 = ChatOpenAI(
+    model="gpt-4"
+)
 
 tasks = CodeTasks()
 agents = CodeAgents()
@@ -80,8 +86,8 @@ chief_qa_engineer_agent = agents.chief_qa_engineer_agent()
 
 # 創建任務
 write_code = tasks.code_task(senior_engineer_agent, instruction)
-review_code = tasks.review_task(qa_engineer_agent, instruction)
-approve_code = tasks.evaluate_task(chief_qa_engineer_agent, instruction)
+review_code = tasks.review_task(qa_engineer_agent, [write_code], instruction)
+approve_code = tasks.evaluate_task(chief_qa_engineer_agent, [review_code], instruction)
 
 # 創建Crew
 crew = Crew(
@@ -94,7 +100,9 @@ crew = Crew(
 		review_code,
 		approve_code
 	],
-	verbose=True
+    process=Process.hierarchical,
+    manager_llm=OpenAIGPT4,
+    verbose=2
 )
 
 result = crew.kickoff()

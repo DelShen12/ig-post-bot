@@ -4,14 +4,6 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import os
 
 class CodeAgents():
-	def __init__(self):
-		self.model = ChatGoogleGenerativeAI(
-    			model="gemini-pro", 
-				verbose=True, 
-				temperature=0.1, 
-				google_api_key=os.environ.get("GEMINI_API_KEY")
-			)
-
 	def senior_engineer_agent(self):
 		return Agent(
 			role='資深軟體工程師',
@@ -21,8 +13,9 @@ class CodeAgents():
 					你的專長是Python程式設計，並且你盡全力
 					產出完美的程式碼
 				""").replace('\t', ''),
-			allow_delegation=False,
-			llm=self.model,
+			allow_delegation=True,
+			# llm=self.model,
+			max_iter=15,
 			verbose=True
 		)
 
@@ -37,7 +30,7 @@ class CodeAgents():
 					你也檢查安全漏洞和邏輯錯誤。
 				""").replace('\t', ''),
 			allow_delegation=True,
-			llm=self.model,
+			# llm=self.model,
 			verbose=True
 		)
 
@@ -51,7 +44,7 @@ class CodeAgents():
 					你檢查程式碼，確保它是完整的，並且能夠完成。
 					你的目標是確保程式碼能夠完成它應該做的工作。
 				""").replace('\t', ''),
-			allow_delegation=True,
-			llm=self.model,
+			# allow_delegation=True,
+			# llm=self.model,
 			verbose=True
 		)
